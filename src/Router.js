@@ -1,13 +1,16 @@
 import React, { Fragment } from "react"
-import { BrowserRouter as Router, Route, Link } from "react-router-dom"
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
 import { withStyles } from "@material-ui/core/styles"
 
 import Header from "./components/Header"
 import Navigation from "./components/Navigation"
 
+import Landing from "./components/Landing"
 import Home from "./components/Home"
 import About from "./components/About"
 import Categories from "./components/Categories"
+
+import { withContext } from "./utils/AppContext"
 
 const styles = theme => ({
   withNav: {
@@ -21,19 +24,36 @@ const styles = theme => ({
   }
 })
 
-const BaseRouter = props => (
-  <Router>
-    <Fragment>
-      <Header />
-      <Navigation />
-      <div className={props.classes.toolbar} />
-      <main className={`${props.classes.withNav} ${props.classes.main}`}>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/about" component={About} />
-        <Route exact path="/categories" component={Categories} />
-      </main>
-    </Fragment>
-  </Router>
-)
+const BaseRouter = props => {
+  const isLoggedIn = props.context.state.userName
+  return (
+    <Router>
+      <Fragment>
+        <Header />
+        {isLoggedIn && <Navigation />}
+        <div className={props.classes.toolbar} />
+        <main
+          className={`${isLoggedIn && props.classes.withNav} ${
+            props.classes.main
+          }`}
+        >
+          <Switch>
+            <Route exact path="/" component={isLoggedIn ? Home : Landing} />
+            {isLoggedIn && (
+              <Fragment>
+                <Route exact path="/about" component={About} />
+                <Route exact path="/categories" component={Categories} />
+              </Fragment>
+            )}
+            <Route
+              path="/:something"
+              render={() => <h2>Nothing to see here.</h2>}
+            />
+          </Switch>
+        </main>
+      </Fragment>
+    </Router>
+  )
+}
 
-export default withStyles(styles)(BaseRouter)
+export default withStyles(styles)(withContext(BaseRouter))

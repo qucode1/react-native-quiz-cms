@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react"
+import { AppContextProvider } from "./utils/AppContext"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles"
 import cyan from "@material-ui/core/colors/cyan"
@@ -27,7 +28,9 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
-        <BaseRouter />
+        <AppContextProvider>
+          <BaseRouter />
+        </AppContextProvider>
       </MuiThemeProvider>
     )
   }
