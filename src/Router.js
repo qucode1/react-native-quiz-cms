@@ -6,6 +6,7 @@ import Header from "./components/Header"
 import Navigation from "./components/Navigation"
 
 import Landing from "./components/Landing"
+import Fallback from "./components/Fallback"
 import Home from "./components/Home"
 import About from "./components/About"
 import Categories from "./components/Categories"
@@ -39,16 +40,17 @@ const BaseRouter = props => {
         >
           <Switch>
             <Route exact path="/" component={isLoggedIn ? Home : Landing} />
-            {isLoggedIn && (
-              <Fragment>
-                <Route exact path="/about" component={About} />
-                <Route exact path="/categories" component={Categories} />
-              </Fragment>
-            )}
             <Route
-              path="/:something"
-              render={() => <h2>Nothing to see here.</h2>}
+              exact
+              path="/about"
+              component={isLoggedIn ? About : Fallback}
             />
+            <Route
+              exact
+              path="/categories"
+              component={isLoggedIn ? Categories : Fallback}
+            />
+            <Route component={Fallback} />
           </Switch>
         </main>
       </Fragment>
